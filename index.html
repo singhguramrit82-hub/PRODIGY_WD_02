@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dialga| Time Keeper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">DIALGA</div>
+      <button id="sound-toggle" class="sound-toggle" title="Toggle Sound">
+        <span class="sound-icon">♪</span>
+      </button>
+    </div>
+
+    <!-- Mode Switcher -->
+    <div class="mode-switcher">
+      <button class="mode-btn active" data-mode="clock">
+        <span class="mode-icon">◷</span>
+        <span class="mode-label">Clock</span>
+      </button>
+      <button class="mode-btn" data-mode="stopwatch">
+        <span class="mode-icon">◔</span>
+        <span class="mode-label">Stopwatch</span>
+      </button>
+      <button class="mode-btn" data-mode="timer">
+        <span class="mode-icon">◕</span>
+        <span class="mode-label">Timer</span>
+      </button>
+      <button class="mode-btn" data-mode="focus">
+        <span class="mode-icon">◐</span>
+        <span class="mode-label">Focus</span>
+      </button>
+    </div>
+
+    <!-- Clock Mode -->
+    <div id="clock-mode" class="mode-content active">
+      <div class="clock-container">
+        <canvas id="clock-canvas" width="400" height="400"></canvas>
+        <div class="digital-time" id="digital-time">00:00:00</div>
+        <div class="date-display" id="date-display">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Stopwatch Mode -->
+    <div id="stopwatch-mode" class="mode-content">
+      <div class="stopwatch-container">
+        <!-- Hexagon Animation -->
+        <div class="hex-display">
+          <svg class="hex-svg" viewBox="0 0 200 200">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <polygon class="hex-outer" points="100,10 173,55 173,145 100,190 27,145 27,55" />
+            <polygon class="hex-middle" points="100,25 163,62.5 163,137.5 100,175 37,137.5 37,62.5" />
+            <polygon class="hex-inner" points="100,40 153,70 153,130 100,160 47,130 47,70" />
+          </svg>
+          <div class="display stopwatch-display" id="display">00:00.00</div>
+        </div>
+
+        <div class="controls">
+          <button id="startPause" class="btn-main">
+            <span class="btn-text">START</span>
+          </button>
+          <button id="lap" class="btn-secondary">
+            <span class="btn-text">LAP</span>
+          </button>
+          <button id="reset" class="btn-minimal">
+            <span class="btn-text">RESET</span>
+          </button>
+        </div>
+
+        <!-- Lap Stats -->
+        <div id="lap-stats" class="lap-stats hidden">
+          <div class="stat-card">
+            <div class="stat-label">FASTEST</div>
+            <div class="stat-value fastest" id="fastest">--</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">AVERAGE</div>
+            <div class="stat-value" id="average">--</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">SLOWEST</div>
+            <div class="stat-value slowest" id="slowest">--</div>
+          </div>
+        </div>
+
+        <!-- Laps List -->
+        <div class="laps-container">
+          <ul id="laps"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timer Mode -->
+    <div id="timer-mode" class="mode-content">
+      <div class="timer-container">
+        <div class="timer-display-wrapper">
+          <canvas id="timer-canvas" width="260" height="260"></canvas>
+          <div class="display timer-display" id="timer-display">05:00</div>
+        </div>
+
+        <div class="timer-input">
+          <div class="input-group">
+            <label for="timer-minutes" class="sr-only">MINUTES</label>
+            <button class="time-adjust" data-unit="minutes" data-delta="1">+</button>
+            <input type="number" id="timer-minutes" min="0" max="99" value="05" />
+            <button class="time-adjust" data-unit="minutes" data-delta="-1">-</button>
+          </div>
+          <div class="separator">:</div>
+          <div class="input-group">
+            <label for="timer-seconds" class="sr-only">SECONDS</label>
+            <button class="time-adjust" data-unit="seconds" data-delta="1">+</button>
+            <input type="number" id="timer-seconds" min="0" max="59" value="00" />
+            <button class="time-adjust" data-unit="seconds" data-delta="-1">-</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="timer-start" class="btn-main">
+            <span class="btn-text">START</span>
+          </button>
+          <button id="timer-reset" class="btn-minimal">
+            <span class="btn-text">RESET</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Focus Mode -->
+    <div id="focus-mode" class="mode-content">
+      <div class="focus-container">
+        <!-- ========== CHANGED: Moved label above canvas ========== -->
+        <div class="focus-label" id="focus-label">FOCUS SESSION</div>
+        
+        <div class="focus-display-wrapper">
+          <!-- ========== CHANGED: Reduced canvas size to 240x240 ========== -->
+          <canvas id="focus-canvas" width="240" height="240"></canvas>
+          <div class="display focus-display" id="focus-display">25:00</div>
+        </div>
+
+        <div class="preset-selector">
+          <button class="preset-btn active" data-time="25" data-type="focus">
+            <span class="preset-time">25</span>
+            <span class="preset-label">Focus</span>
+          </button>
+          <button class="preset-btn" data-time="5" data-type="break">
+            <span class="preset-time">5</span>
+            <span class="preset-label">Break</span>
+          </button>
+          <button class="preset-btn" data-time="15" data-type="long">
+            <span class="preset-time">15</span>
+            <span class="preset-label">Long</span>
+          </button>
+        </div>
+
+        <div class="controls">
+          <button id="focus-start" class="btn-main">
+            <span class="btn-text">START</span>
+          </button>
+          <button id="focus-reset" class="btn-minimal">
+            <span class="btn-text">RESET</span>
+          </button>
+        </div>
+
+        <div class="focus-stats">
+          <div class="stat-card">
+            <div class="stat-label">SESSIONS</div>
+            <div class="stat-value" id="sessions">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TOTAL TIME</div>
+            <div class="stat-value" id="total-time">0m</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
