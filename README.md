@@ -3,7 +3,9 @@
 A modern stopwatch, timer, and focus (Pomodoro) web application, featuring a futuristic glassmorphism UI, neon animations, and interactive sound feedback.
 
 ## 🎥 Preview
-
+<img src="./preview/clock_mode.png" width="305"> <img src="./preview/stopwatch.png" width="300">
+<br>
+<img src="./preview/focus_mode.png" width="300"> <img src="./preview/timer_mode.png" width="300">
 
 ## 🚀 Features
 ### ⏱️ Clock Mode & Stopwatch
